@@ -2,8 +2,19 @@ mod network;
 
 use network::{NetworkServer, Message};
 use std::net::SocketAddr;
-use std::env;
 use tokio::time::{sleep, Duration};
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[command(name = "belka-chain")]
+#[command(about = "Belka Chain P2P Node")]
+struct Args {
+    #[arg(short, long, help = "Port to listen on")]
+    port: u16,
+    
+    #[arg(short, long, help = "Peer address to connect to (optional)")]
+    peer: Option<String>,
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -12,19 +23,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 async fn  test_start_p2p_network() -> Result<(), Box<dyn std::error::Error>> {
-    let args: Vec<String> = env::args().collect();
-
-    // println!("args: {:?}", args);
+    let args = Args::parse();
     
-    let port = args.get(1)
-        .and_then(|p| p.parse::<u16>().ok())
-        .unwrap();
-
-        let peer = args.get(1)
-        .and_then(|p| p.parse::<u16>().ok())
-        .unwrap();
-
-    // let port = 9090;
+    let port = args.port;
     
     let addr: SocketAddr = format!("127.0.0.1:{}", port).parse()?;
     let node_id = format!("node-{}", port).into_bytes();
