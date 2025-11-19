@@ -1,4 +1,6 @@
 mod network;
+mod crypto;
+mod core;
 
 use network::{NetworkServer, Message};
 use std::net::SocketAddr;
